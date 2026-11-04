@@ -15,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 // Sinh constructor có tham số cho các field final chưa được khởi tạo
 // và các field @NonNull chưa được khởi tạo.
-public class IUserService implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -71,6 +71,7 @@ public class IUserService implements UserService {
 
     private UserRp mapToDto(User user){
         return UserRp.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .username(user.getUsername())
                 .email(user.getEmail())
