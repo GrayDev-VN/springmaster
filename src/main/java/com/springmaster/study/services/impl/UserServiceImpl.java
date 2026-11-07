@@ -3,10 +3,13 @@ package com.springmaster.study.services.impl;
 import com.springmaster.study.dto.request.UserRq;
 import com.springmaster.study.dto.response.UserRp;
 import com.springmaster.study.entity.User;
+import com.springmaster.study.mapper.UserMapper;
 import com.springmaster.study.repository.UserRepository;
 import com.springmaster.study.services.UserService;
 import lombok.RequiredArgsConstructor;
+// import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+// import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +21,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    // Demo: chỉ inject khi bật lại ModelMapper bean/dependency hoặc dùng Jackson bean.
+    // private final ObjectMapper objectMapper;
+//    private final ModelMapper modelMapper;
 
+    // Sử dụng MapStruct
+    private final UserMapper userMapper;
     @Override
     public void create(UserRq userRq) {
         userRepository.save(mapToEntity(userRq));
@@ -59,24 +67,27 @@ public class UserServiceImpl implements UserService {
     }
 
     private User mapToEntity(UserRq userRq) {
-        return User.builder()
-                .name(userRq.getName())
-                .password(userRq.getPassword())
-                .email(userRq.getEmail())
-                .phone(userRq.getPhone())
-                .address(userRq.getAddress())
-                .username(userRq.getUsername())
-                .build();
+        // MapStruct đang được sử dụng thực tế trong create().
+        // Mapper copy password nguyên bản; mã hóa mật khẩu là trách nhiệm của service.
+        return userMapper.toEntity(userRq);
     }
 
-    private UserRp mapToDto(User user){
-        return UserRp.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .address(user.getAddress())
-                .build();
+    private UserRp mapToDto(User user) {
+        // Demo 1 - ObjectMapper (Jackson): chủ yếu phục vụ JSON/object conversion.
+        // Dùng bean đã cấu hình thay vì new ObjectMapper() mỗi lần gọi.
+        // User có password, UserRp không có: bỏ qua field dư cho riêng phép chuyển này.
+        // UserRp cần constructor không tham số (hoặc cấu hình Jackson creator/builder).
+        // return objectMapper.rebuild()
+        //         .disable(tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        //         .build().convertValue(user, UserRp.class);
+
+        // Demo 2 - ModelMapper: suy luận mapping lúc runtime; lỗi có thể xuất hiện khi chạy.
+        // Không chỉ dành cho project cá nhân; hiệu năng cần đo trên dữ liệu thực tế.
+        // UserRp cần constructor không tham số để ModelMapper tạo đối tượng đích.
+        // return modelMapper.map(user, UserRp.class);
+
+        // Demo 3 - MapStruct: sinh code Java khi compile, không dùng reflection để mapping.
+        // Đây là cách đang dùng trong index(); lỗi target chưa map sẽ bị báo khi build.
+        return userMapper.toDto(user);
     }
 }

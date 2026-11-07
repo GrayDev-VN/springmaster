@@ -4,6 +4,9 @@ import lombok.*;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserRq {
     private String name;
     private String address;
