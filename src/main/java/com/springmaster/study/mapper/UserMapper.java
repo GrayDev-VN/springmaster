@@ -2,7 +2,6 @@ package com.springmaster.study.mapper;
 
 import com.springmaster.study.dto.record.UserRequest;
 import com.springmaster.study.dto.record.UserResponse;
-import com.springmaster.study.dto.request.UserRq;
 import com.springmaster.study.dto.response.UserRp;
 import com.springmaster.study.entity.User;
 import org.mapstruct.Mapper;
@@ -26,10 +25,10 @@ public interface UserMapper {
     @Mapping(target ="id", ignore = true)
     User toEntity(UserRequest userRequest);
 
-    // API hiện tại dùng DTO class; hai method phía trên giữ để học mapping record.
+    // API hiện tại nhận record UserRequest; mapping DTO class giữ làm ví dụ.
     // Thuộc tính cùng tên được ánh xạ tự động, không cần name -> name.
-    @Mapping(target = "id", ignore = true)
-    User toEntity(UserRq userRq);
+//    @Mapping(target = "id", ignore = true)
+//    User toEntity(UserRq userRq);
 
     UserRp toDto(User user);
 }

@@ -1,6 +1,7 @@
 package com.springmaster.study.services.impl;
 
-import com.springmaster.study.dto.request.UserRq;
+import com.springmaster.study.dto.record.UserRequest;
+import com.springmaster.study.dto.record.UserResponse;
 import com.springmaster.study.dto.response.UserRp;
 import com.springmaster.study.entity.User;
 import com.springmaster.study.mapper.UserMapper;
@@ -28,12 +29,12 @@ public class UserServiceImpl implements UserService {
     // Sử dụng MapStruct
     private final UserMapper userMapper;
     @Override
-    public void create(UserRq userRq) {
-        userRepository.save(mapToEntity(userRq));
+    public void create(UserRequest userRequest) {
+        userRepository.save(mapToEntity(userRequest));
     }
 
     @Override
-    public void update(String id, UserRq userRq) {
+    public void update(String id, UserRequest userRequest) {
         Optional<User> user = userRepository.findById(id);
 
         if(user.isEmpty()) {
@@ -41,18 +42,19 @@ public class UserServiceImpl implements UserService {
         }
 
         User userUpdate = user.get();
-        userUpdate.setAddress(userRq.getAddress());
-        userUpdate.setPhone(userRq.getPhone());
-        userUpdate.setName(userRq.getName());
-        userUpdate.setEmail(userRq.getEmail());
-        userUpdate.setPassword(userRq.getPassword());
-        userUpdate.setUsername(userRq.getUsername());
+        // Record cung cấp accessor name(), email()... thay vì getter getName().
+        userUpdate.setAddress(userRequest.address());
+        userUpdate.setPhone(userRequest.phone());
+        userUpdate.setName(userRequest.name());
+        userUpdate.setEmail(userRequest.email());
+        userUpdate.setPassword(userRequest.password());
+        userUpdate.setUsername(userRequest.username());
         userRepository.save(userUpdate);
 
     }
 
     @Override
-    public List<UserRp> index() {
+    public List<UserResponse> index() {
         List<User> list = userRepository.findAll();
         return list.stream().map(this::mapToDto).toList();
     }
@@ -66,13 +68,13 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user.get());
     }
 
-    private User mapToEntity(UserRq userRq) {
+    private User mapToEntity(UserRequest userRequest) {
         // MapStruct đang được sử dụng thực tế trong create().
         // Mapper copy password nguyên bản; mã hóa mật khẩu là trách nhiệm của service.
-        return userMapper.toEntity(userRq);
+        return userMapper.toEntity(userRequest);
     }
 
-    private UserRp mapToDto(User user) {
+    private UserResponse mapToDto(User user) {
         // Demo 1 - ObjectMapper (Jackson): chủ yếu phục vụ JSON/object conversion.
         // Dùng bean đã cấu hình thay vì new ObjectMapper() mỗi lần gọi.
         // User có password, UserRp không có: bỏ qua field dư cho riêng phép chuyển này.
@@ -88,6 +90,6 @@ public class UserServiceImpl implements UserService {
 
         // Demo 3 - MapStruct: sinh code Java khi compile, không dùng reflection để mapping.
         // Đây là cách đang dùng trong index(); lỗi target chưa map sẽ bị báo khi build.
-        return userMapper.toDto(user);
+        return userMapper.toResponse(user);
     }
 }

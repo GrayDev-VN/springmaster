@@ -1,13 +1,13 @@
 package com.springmaster.study.services;
 
-import com.springmaster.study.dto.request.UserRq;
-import com.springmaster.study.dto.response.UserRp;
+import com.springmaster.study.dto.record.UserRequest;
+import com.springmaster.study.dto.record.UserResponse;
 
 import java.util.List;
 
 public interface UserService {
-    void create(UserRq userRq);
-    void update(String id, UserRq userRq);
-    List<UserRp> index();
+    void create(UserRequest userRequest);
+    void update(String id, UserRequest userRequest);
+    List<UserResponse> index();
     void delete(String id);
 }
