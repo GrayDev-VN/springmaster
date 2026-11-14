@@ -2,7 +2,6 @@ package com.springmaster.study.controller;
 
 import com.springmaster.study.dto.record.UserRequest;
 import com.springmaster.study.dto.record.UserResponse;
-import com.springmaster.study.dto.response.UserRp;
 import com.springmaster.study.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

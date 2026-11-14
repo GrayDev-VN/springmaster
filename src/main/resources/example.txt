@@ -1,0 +1,10 @@
+//API chuẩn doanh nghiệp (Standardized API)
+{
+    "code": 1000,
+    "message": "Success",
+    "result": {
+    "id": 1,
+    "username": "spring_master",
+    "email": "admin@example.com"
+    }
+}
