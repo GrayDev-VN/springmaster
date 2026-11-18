@@ -41,10 +41,11 @@ class UserValidationTest {
                     post("/api/v1/users"), put("/api/v1/users/test-id")}) {
                 mvc.perform(request.contentType(MediaType.APPLICATION_JSON).content(body))
                         .andExpect(status().isBadRequest())
-                        .andExpect(jsonPath("$.name").value("Tên không được để trống"))
-                        .andExpect(jsonPath("$.address").value("Địa chỉ tối đa 30 ký tự"))
-                        .andExpect(jsonPath("$.phone").value("Số điện thoại phải gồm 9 đến 10 chữ số"))
-                        .andExpect(jsonPath("$.email").value("Email không đúng định dạng"));
+                        .andExpect(jsonPath("$.code").value(9999))
+                        .andExpect(jsonPath("$.result.name").value("Tên không được để trống"))
+                        .andExpect(jsonPath("$.result.address").value("Địa chỉ tối đa 30 ký tự"))
+                        .andExpect(jsonPath("$.result.phone").value("Số điện thoại phải gồm 9 đến 10 chữ số"))
+                        .andExpect(jsonPath("$.result.email").value("Email không đúng định dạng"));
             }
             verifyNoInteractions(service);
         }

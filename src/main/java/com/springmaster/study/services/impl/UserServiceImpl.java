@@ -4,6 +4,7 @@ import com.springmaster.study.dto.record.UserRequest;
 import com.springmaster.study.dto.record.UserResponse;
 import com.springmaster.study.dto.response.UserRp;
 import com.springmaster.study.entity.User;
+import com.springmaster.study.exception.UserNotFoundException;
 import com.springmaster.study.mapper.UserMapper;
 import com.springmaster.study.repository.UserRepository;
 import com.springmaster.study.services.UserService;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(id);
 
         if(user.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
+            throw new UserNotFoundException();
         }
 
         User userUpdate = user.get();
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
         userUpdate.setEmail(userRequest.email());
         userUpdate.setPassword(userRequest.password());
         userUpdate.setUsername(userRequest.username());
+        userUpdate.setCccd(userRequest.cccd());
         userRepository.save(userUpdate);
 
     }
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService {
     public void delete(String id) {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
+            throw new UserNotFoundException();
         }
         userRepository.delete(user.get());
     }
